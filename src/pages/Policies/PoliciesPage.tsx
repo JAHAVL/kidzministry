@@ -1,59 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { PATHS } from '../../utils/pathconfig';
+import { POLICY_DATA, Policy } from '../../data/policyData';
+import searchService from '../../services/searchService';
 import './PoliciesPage.css';
 
-interface PolicyType {
-  id: string;
-  title: string;
-  category: string;
-  summary: string;
-}
-
-// This will eventually be replaced with actual data from an API or data file
-const DUMMY_POLICIES = [
-  { 
-    id: 'safety-guidelines', 
-    title: 'Safety Guidelines', 
-    category: 'Safety',
-    summary: 'Essential safety procedures for all Kidz Team members.'
-  },
-  { 
-    id: 'check-in-process', 
-    title: 'Check-in Process', 
-    category: 'Operations',
-    summary: 'Standard procedures for child check-in and check-out.'
-  },
-  { 
-    id: 'classroom-management', 
-    title: 'Classroom Management', 
-    category: 'Teaching',
-    summary: 'Best practices for managing the classroom environment.'
-  },
-  { 
-    id: 'volunteer-expectations', 
-    title: 'Volunteer Expectations', 
-    category: 'Team',
-    summary: 'What we expect from all Kidz Team volunteers.'
-  },
-  { 
-    id: 'emergency-procedures', 
-    title: 'Emergency Procedures', 
-    category: 'Safety',
-    summary: 'What to do in case of various emergency situations.'
-  },
-  { 
-    id: 'food-allergies', 
-    title: 'Food Allergy Protocols', 
-    category: 'Safety',
-    summary: 'How to handle food allergies and dietary restrictions.'
-  }
-];
+// We use the Policy interface directly from policyData.ts
 
 const PoliciesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<Policy[]>([]);
   const location = useLocation();
+  
+  // Initialize search service with policy data
+  useEffect(() => {
+    searchService.setPolicyData(POLICY_DATA);
+    // Pre-initialize the model in background
+    searchService.initializeModel().catch(err => console.error('Failed to pre-initialize TinyLlama:', err));
+  }, []);
   
   // Extract search query from URL parameters if present
   useEffect(() => {
@@ -61,19 +27,50 @@ const PoliciesPage: React.FC = () => {
     const searchQuery = searchParams.get('search');
     if (searchQuery) {
       setSearchTerm(searchQuery);
+      handleSearch(searchQuery);
     }
   }, [location.search]);
 
-  // Extract unique categories
-  const categories = ['All', ...new Set(DUMMY_POLICIES.map(policy => policy.category))];
+  // Handle search using TinyLlama
+  const handleSearch = async (query: string) => {
+    if (query.trim() === '') {
+      setSearchResults(POLICY_DATA);
+      return;
+    }
+    
+    setIsSearching(true);
+    try {
+      // Use semantic search with TinyLlama
+      const results = await searchService.semanticSearch(query);
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Search error:', error);
+      // Fallback to basic search if TinyLlama fails
+      setSearchResults(searchService.basicSearch(query));
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
-  // Filter policies based on search and category
-  const filteredPolicies = DUMMY_POLICIES.filter(policy => {
-    const matchesSearch = policy.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         policy.summary.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || policy.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Extract unique categories
+  const categories = ['All', ...new Set(POLICY_DATA.map(policy => policy.category))];
+
+  // Determine which policies to display
+  const getPolicies = () => {
+    // If no search term, show all or filtered by category
+    if (searchTerm.trim() === '' && searchResults.length === 0) {
+      return POLICY_DATA.filter(policy => 
+        selectedCategory === 'All' || policy.category === selectedCategory
+      );
+    }
+    
+    // Otherwise filter search results by category
+    return searchResults.filter(policy => 
+      selectedCategory === 'All' || policy.category === selectedCategory
+    );
+  };
+  
+  const filteredPolicies = getPolicies();
 
   return (
     <div className="policies-page">
@@ -84,12 +81,22 @@ const PoliciesPage: React.FC = () => {
       
       <div className="filter-container">
         <div className="search-box">
-          <input
-            type="text"
-            placeholder="Search policies..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch(searchTerm);
+          }}>
+            <input
+              type="text"
+              placeholder="Search policies..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              disabled={isSearching}
+            />
+            <button type="submit" disabled={isSearching}>
+              {isSearching ? 'Searching...' : 'Search'}
+            </button>
+          </form>
+          {isSearching && <div className="search-loading">Using TinyLlama for intelligent search...</div>}
         </div>
         
         <div className="category-filter">
@@ -98,6 +105,7 @@ const PoliciesPage: React.FC = () => {
               key={category}
               className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category)}
+              disabled={isSearching}
             >
               {category}
             </button>

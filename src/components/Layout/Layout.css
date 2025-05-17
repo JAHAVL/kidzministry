@@ -13,6 +13,182 @@
   position: relative;
 }
 
+.ai-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  background: linear-gradient(135deg, #8a2be2, #4169e1);
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* Search answer container styles */
+.search-answer-container {
+  margin-top: 1rem;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  max-width: 100%;
+  animation: fadeIn 0.3s ease-in-out;
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.answer-header {
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(90deg, rgba(138, 43, 226, 0.1), rgba(65, 105, 225, 0.1));
+  border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.close-answer-btn {
+  background: none;
+  border: none;
+  color: #777;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-answer-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.answer-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: linear-gradient(135deg, #8a2be2, #4169e1);
+  border-radius: 30px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+}
+
+.answer-badge::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #00ff6a;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+  animation: pulse 1.5s infinite;
+}
+
+.answer-content {
+  padding: 1.2rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.view-policy-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.view-policy-btn {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.8), rgba(65, 105, 225, 0.8));
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.view-policy-btn:hover {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.9), rgba(65, 105, 225, 0.9));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.related-policies {
+  padding: 0.8rem 1.2rem;
+  background: linear-gradient(90deg, rgba(65, 105, 225, 0.05), rgba(138, 43, 226, 0.05));
+  border-top: 1px solid rgba(138, 43, 226, 0.1);
+}
+
+.related-policies h4 {
+  font-size: 0.9rem;
+  margin: 0 0 0.6rem 0;
+  color: #555;
+  font-weight: 600;
+}
+
+.related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.related-links a {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(65, 105, 225, 0.1));
+  border: 1px solid rgba(138, 43, 226, 0.2);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: #4a4a6a;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.related-links a:hover {
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(65, 105, 225, 0.2));
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ai-badge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #00ff6a;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
 .global-search-container .container {
   width: 100%;
   max-width: 900px;

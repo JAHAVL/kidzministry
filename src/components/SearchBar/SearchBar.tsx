@@ -6,12 +6,14 @@ interface SearchBarProps {
   placeholder?: string;
   onSearch: (term: string) => void;
   showTagline?: boolean;
+  isSearching?: boolean;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
   placeholder = 'Search...',
   onSearch,
-  showTagline = true
+  showTagline = true,
+  isSearching = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -31,14 +33,28 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <input
           type="text"
           className="search-input"
-          placeholder={placeholder}
+          placeholder={isSearching ? 'Searching with R.ai...' : placeholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          disabled={isSearching}
         />
-        <button type="submit" className="search-button" aria-label="Search">
-          <FiSearch size={28} />
+        <button 
+          type="submit" 
+          className={`search-button ${isSearching ? 'loading' : ''}`} 
+          aria-label="Search"
+          disabled={isSearching}
+        >
+          {isSearching ? 
+            <div className="spinner"></div> : 
+            <FiSearch size={28} />
+          }
         </button>
       </form>
+      {isSearching && 
+        <div className="search-message">
+          Using R.ai to enhance your search...
+        </div>
+      }
     </div>
   );
 };

@@ -70,6 +70,40 @@
   transition: all 0.3s ease;
 }
 
+.search-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Spinner for loading state */
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(138, 43, 226, 0.3);
+  border-radius: 50%;
+  border-top-color: #8a2be2;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Search message during loading */
+.search-message {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #8a2be2;
+  animation: pulse 1.5s infinite;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
 .search-button:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
