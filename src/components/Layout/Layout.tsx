@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import Background from '../Background/Background';
@@ -12,7 +12,6 @@ import './Layout.css';
 const Layout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
   
   // Check if we're on the home page - either exactly '/' or undefined path
   const isHomePage = location.pathname === '/' || location.pathname === '';
@@ -25,7 +24,6 @@ const Layout: React.FC = () => {
 
   // Handle search submission
   const handleSearch = (query: string) => {
-    setSearchTerm(query);
     if (query.trim()) {
       navigate(`/policies?search=${encodeURIComponent(query)}`);
     }
