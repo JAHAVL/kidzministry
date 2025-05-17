@@ -1,0 +1,101 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 0;
+}
+
+.global-search-container {
+  padding: 1.5rem 1rem 0.5rem;
+  width: 100%;
+  z-index: 5;
+  position: relative;
+}
+
+.global-search-container .container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 4rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.home-layout {
+  padding-top: 0;
+}
+
+/* Adding glass effect to content areas */
+.main-content .container {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.light-theme .main-content .container {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme .main-content .container {
+  background: rgba(30, 30, 50, 0.6);
+  border: 1px solid rgba(80, 80, 120, 0.3);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Light and dark theme styles */
+:root {
+  --bg-light: #f9f9f9;
+  --text-light: #333333;
+  --bg-dark: #1a1a1a;
+  --text-dark: #f5f5f5;
+}
+
+body.light-theme {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
+
+body.dark-theme {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+body.light-theme .app-footer {
+  background-color: #f0f0f0;
+  border-top: 1px solid #e0e0e0;
+}
+
+body.dark-theme .app-footer {
+  background-color: #252525;
+  border-top: 1px solid #333333;
+}
