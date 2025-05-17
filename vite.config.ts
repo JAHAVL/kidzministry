@@ -5,6 +5,10 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: 8083,
+    strictPort: true // Fail if port 8083 is not available
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

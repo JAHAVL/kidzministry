@@ -183,6 +183,25 @@
   animation: pulse 1.5s infinite;
 }
 
+/* AI model indicator badges */
+.ai-model-indicator {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: white;
+}
+
+.real-ai-indicator {
+  background-color: #25a55f;
+}
+
+.fallback-ai-indicator {
+  background-color: #888;
+}
+
 @keyframes pulse {
   0% { opacity: 0.6; }
   50% { opacity: 1; }

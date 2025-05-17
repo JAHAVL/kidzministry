@@ -4,6 +4,7 @@ import Header from '../Header/Header';
 import Background from '../Background/Background';
 import SearchBar from '../SearchBar/SearchBar';
 import tinyLlamaSearch from '../../services/searchService';
+import { POLICY_DATA } from '../../data/policyData';
 import './Layout.css';
 
 /**
@@ -31,46 +32,45 @@ const Layout: React.FC = () => {
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
   // Store the current policy path for navigation
   const [policyPath, setPolicyPath] = useState<string>('');
+  // We're using the embedded model - no need to track real/fallback states
 
   // Initialize R.ai in the background when component mounts
   useEffect(() => {
-    tinyLlamaSearch.initModel();
+    // Add additional debugging to browser console
+    console.log('Starting R.ai initialization...');
+    
+    // Load policy data first - this is needed for both mock and real responses
+    tinyLlamaSearch.setPolicyData(POLICY_DATA);
+    console.log('Policy data loaded for R.ai search');
+    
+    // Create a loading indicator in UI for better UX
+    setIsSearching(true);
+    
+    // Initialize the model with proper error handling
+    const initializeAI = async () => {
+      try {
+        const success = await tinyLlamaSearch.initModel();
+        console.log('AI model initialization result:', success ? 'SUCCESS' : 'FAILED');
+        if (success) {
+          // Test the model with a simple query
+          const testResponse = await tinyLlamaSearch.generateResponse('test');
+          console.log('AI test response:', testResponse);
+        }
+      } catch (error) {
+        console.error('Error during AI initialization:', error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    
+    // Start the initialization process
+    initializeAI();
   }, []);
   
-  // Function to generate simulated AI responses based on the search query
-  const generateSimulatedResponse = (query: string): { answer: string; policyPath: string } => {
-    const lowerQuery = query.toLowerCase();
-    
-    if (lowerQuery.includes('check-in')) {
-      return {
-        answer: 'Child check-in procedures require matching security tags for each child and guardian. Volunteers must verify the tags match before releasing a child. For safety reasons, only authorized guardians with matching tags may pick up children.',
-        policyPath: '/policies/checkin'
-      };
-    } else if (lowerQuery.includes('volunteer')) {
-      return {
-        answer: 'All Kidz Team volunteers must be committed followers of Christ, complete a background check, attend volunteer orientation, and follow all safety protocols. Volunteers should arrive 30 minutes before service and stay 15 minutes after to ensure proper supervision.',
-        policyPath: '/policies/volunteers'
-      };
-    } else if (lowerQuery.includes('safety') || lowerQuery.includes('security')) {
-      return {
-        answer: 'Safety procedures include maintaining proper adult-to-child ratios, ensuring secure check-in/out, regular equipment inspections, and adherence to allergy protocols. All security incidents must be reported immediately to the children\'s ministry director.',
-        policyPath: '/policies/safety'
-      };
-    } else if (lowerQuery.includes('training') || lowerQuery.includes('orientation')) {
-      return {
-        answer: 'New volunteer training includes classroom management techniques, emergency procedures, curriculum overview, and child development basics. All volunteers must attend refresher training sessions quarterly.',
-        policyPath: '/policies/training'
-      };
-    } else {
-      return {
-        answer: `Based on your search for "${query}", here are key points from our Kidz Ministry policies: We prioritize child safety, positive learning environments, and age-appropriate biblical teaching. Our goal is to partner with families in nurturing children's spiritual growth.`,
-        policyPath: '/policies'
-      };
-    }
-  };
+  // We're now using the real TinyLlama model to generate responses instead of simulated ones
 
   
-  // Handle search submission using R.ai
+  // Handle search submission using ONLY real R.ai (TinyLlama) integration - no fallbacks
   const handleSearch = async (query: string) => {
     if (!query.trim()) return;
     
@@ -79,22 +79,35 @@ const Layout: React.FC = () => {
       setShowAnswer(false);
       setIsSearching(true);
       
-      // Use R.ai to enhance the search query (simulated for now)
-      const enhancedQuery = await tinyLlamaSearch.enhanceQuery(query);
-      console.log('Enhanced query:', enhancedQuery);
+      // Display an error if we try to search before the AI is ready
+      const modelLoaded = tinyLlamaSearch.isLoaded();
+      console.log('AI model loaded status before search:', modelLoaded);
       
-      // Generate a simulated response based on the enhanced query
-      const responseObj = generateSimulatedResponse(enhancedQuery);
+      if (!modelLoaded) {
+        console.log('Starting model initialization...');
+        // Show a loading message while we try to load the model
+        setSearchAnswer('Loading R.ai model. This may take a moment for the first search...');
+        setShowAnswer(true);
+      }
+      
+      // Get the response from the real AI model (this will throw an error if model can't be used)
+      const responseObj = await tinyLlamaSearch.generateResponse(query);
+      console.log('R.ai response generated successfully for:', query);
+      
+      // Successfully generated response
+      
+      // Update UI with the AI response
       setSearchAnswer(responseObj.answer);
       setPolicyPath(responseObj.policyPath);
       setShowAnswer(true);
-      
-      // Now we'll just show the answer and let the user choose when to navigate
-      // via the 'View Full Policy' button or related policy links
-    } catch (error) {
-      console.error('Search error:', error);
-    } finally {
+    } catch (error: any) {
+      console.error('⚠️ AI search error:', error);
+      // Show the error message from the AI system
+      setSearchAnswer(`R.ai could not process your query. ${error.message || 'Please try again in a few moments.'}`);
+      setPolicyPath('/policies');
       setShowAnswer(true);
+      // Error encountered, but we'll still show a helpful message
+    } finally {
       setIsSearching(false);
     }
   };
@@ -119,7 +132,9 @@ const Layout: React.FC = () => {
           {showAnswer && (
             <div className="search-answer-container">
               <div className="answer-header">
-                <div className="answer-badge">R.ai Response</div>
+                <div>
+                  <span className="answer-badge">R.ai Answer</span>
+                </div>
                 <button
                   className="close-answer-btn"
                   onClick={() => setShowAnswer(false)}
