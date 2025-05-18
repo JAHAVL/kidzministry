@@ -95,8 +95,8 @@ const PolicyDetailPage: React.FC = () => {
   }, [sectionId]);
 
   const goBack = () => {
-    // Go back to the previous page in history instead of always going home
-    navigate(-1);
+    // Always go back to the home page
+    navigate('/');
   };
 
   if (!policy) {

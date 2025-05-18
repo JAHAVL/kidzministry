@@ -46,7 +46,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         >
           {isSearching ? 
             <div className="spinner"></div> : 
-            <FiSearch size={28} />
+            <FiSearch size={42} />
           }
         </button>
       </form>

@@ -120,6 +120,10 @@ const PoliciesPage: React.FC = () => {
               to={`${PATHS.POLICIES}/${policy.id}`} 
               className="policy-card"
               key={policy.id}
+              onClick={() => {
+                // Ensure the correct policy is being linked
+                console.log('Navigating to policy:', policy.title, 'with ID:', policy.id);
+              }}
             >
               <div className="card-content">
                 <h3>{policy.title}</h3>
