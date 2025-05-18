@@ -45,7 +45,7 @@ const Header: React.FC = () => {
       
       <nav className={`mobile-nav ${menuOpen ? 'open' : ''}`}>
         <ul>
-          <li><Link to={PATHS.HOME} onClick={toggleMenu}>
+          <li><Link to="/" onClick={toggleMenu}>
             <span className="nav-icon"><FiBookOpen /></span>
             <span>Home</span>
           </Link></li>
