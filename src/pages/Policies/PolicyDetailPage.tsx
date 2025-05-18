@@ -89,9 +89,17 @@ const PolicyDetailPage: React.FC = () => {
       }
     }
     
+    // TEMPORARILY REMOVED: Default policy fallback
+    // This was causing the "legacy page" issue by showing Movement & Vision policy by default
+    /* 
     // If no valid section or no sectionId, default to first policy
     console.log('Defaulting to first policy:', POLICY_DATA[0].title);
     setPolicy(POLICY_DATA[0]);
+    */
+    
+    // Instead, we'll just render an error message
+    console.log('No valid policy found - will show error state');
+    // The component will render the loading state and then fail gracefully
   }, [sectionId]);
 
   const goBack = () => {

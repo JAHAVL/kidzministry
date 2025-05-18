@@ -394,6 +394,9 @@ class KidzMinistrySearchService {
         console.log('Bible-related question detected, directing to Vision page');
         primaryPolicyId = 'movement-vision';
         
+        // We don't need to modify the response here as we're now allowing Bible questions
+        // The system prompt will ensure the AI doesn't mention theological perspective
+        
         // Store this forced policy ID as a flag to prevent metadata from overriding it
         this.lastForcedPolicyId = 'movement-vision';
       }

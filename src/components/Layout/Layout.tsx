@@ -192,9 +192,9 @@ const Layout: React.FC = () => {
                         console.log(`Navigating to valid policy: ${policyId}`);
                         navigate(`/policies/${policyId}`);
                       } else {
-                        // If invalid or missing policy ID, default to policies index
-                        console.log(`Invalid policy ID: ${policyId}, redirecting to policies index`);
-                        navigate('/policies');
+                        // If invalid or missing policy ID, default to the Vision page
+                        console.log(`Invalid policy ID: ${policyId}, redirecting to Vision page as default`);
+                        navigate('/policies/movement-vision');
                       }
                     }}
                   >
